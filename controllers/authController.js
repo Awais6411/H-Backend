@@ -45,11 +45,11 @@ const signupController = async (req, res) => {
     // }
     const salt = await brcrypt.genSalt(10);
     const { email, password, fullName, phone } = req.body;
-    const adminId = CryptoJS.AES.decrypt(
-      referral,
-      process.env.JWT_KEY
-    ).toString(CryptoJS.enc.Utf8);
-    console.log(`adminId ${adminId}`);
+    // const adminId = CryptoJS.AES.decrypt(
+    //   referral,
+    //   process.env.JWT_KEY
+    // ).toString(CryptoJS.enc.Utf8);
+    // console.log(`adminId ${adminId}`);
     // return res.json("testing");
     const status = false;
     const hashedPassword = await brcrypt.hash(password, salt);

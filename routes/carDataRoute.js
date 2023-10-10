@@ -7,8 +7,10 @@ const {
   getCarDetailsByCarId,
   updateUserAuctioneerCarsList,
   getUserCarsDataWithStatus,
+  createCarControllerWithoutImages,
 } = require("../controllers/carDataController");
 
+router.post("/createcarwithoutimages", createCarControllerWithoutImages);
 router.post("/updateuserauctioneercarlist", updateUserAuctioneerCarsList);
 router.get("/carDetails/:id", getCarDetailsByCarId);
 router.get("/carimages/:id", getCarImagesByCarId);

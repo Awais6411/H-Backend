@@ -18,6 +18,7 @@ const getUserCarsData = async (req, res) => {
     return res.status(500).json({ status: 500, message: `${error.message}` });
   }
 };
+
 const getUserCarsDataWithStatus = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -58,6 +59,7 @@ const getCarImagesByCarId = async (req, res) => {
     return res.status(500).json({ status: 500, message: `${error.message}` });
   }
 };
+
 const getCarDetailsByCarId = async (req, res) => {
   try {
     const car_id = req.params.id;
@@ -78,18 +80,84 @@ const getCarDetailsByCarId = async (req, res) => {
   }
 };
 
+// const createCarController = async (req, res) => {
+//   try {
+//     const { year, make, color, model, details, user_id, sold } = req.body;
+//     const userId = parseInt(user_id);
+//     const soldStatus = parseInt(sold);
+//     const imageFiles = req.files;
+//     console.log("userId=>", user_id);
+//     console.log("Body=>", req.body);
+//     const mainImageUrl = imageFiles[0].filename;
+//     console.log("imageUrl===>", imageFiles);
+//     let result;
+//     const createCar = `INSERT INTO tblcar(year,make,color,model,details,imageUrl,user_id) VALUES(?,?,?,?,?,?,?)`;
+//     [result] = await pool.query(createCar, [
+//       year,
+//       make,
+//       color,
+//       model,
+//       details,
+//       mainImageUrl,
+//       userId,
+//       soldStatus,
+//     ]);
+//     const car_id = result.insertId;
+//     const insertImages = `INSERT INTO tblimages(car_id,imageUrl) VALUES(?,?)`;
+//     filename = await Promise.all(
+//       imageFiles.map(async (item) =>
+//         pool.query(insertImages, [car_id, item.filename])
+//       )
+//     );
+
+//     console.log("Result=>", result);
+//     if (!result) {
+//       return res.status(500).json({ status: 500, message: "Operation Failed" });
+//     }
+
+//     return res
+//       .status(200)
+//       .json({ status: 200, message: "data created successfully" });
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).json({ status: 500, message: `${error.message}` });
+//   }
+
+//   /*
+
+//     // const { year, make, color, model, details } = req.body;
+//     // const imageUrl = req.file.filename;
+//     // console.log("ImageUrl=>", imageUrl);
+//     // console.log("Body=>", req.body);
+//     // let result;
+//     // const createCar = `INSERT INTO tblcar(year,make,color,model,details) VALUES(?,?,?,?,?)`;
+//     // [result] = await pool.query(createCar, [year, make, color, model, details]);
+//     // console.log("Result=>", result);
+//     // if (!result) {
+//     //   return res.status(500).json({ status: 500, message: "Operation Failed" });
+//     // }
+
+//     // return res
+//     //   .status(200)
+//     //   .json({ status: 200, message: "data created successfully" });
+
+//     */
+// };
+
 const createCarController = async (req, res) => {
   try {
-    const { year, make, color, model, details, user_id, sold } = req.body;
+    console.log(req.body);
+    const { year, make, color, model, details, user_id, vin, mileage } =
+      req.body;
     const userId = parseInt(user_id);
-    const soldStatus = parseInt(sold);
+
     const imageFiles = req.files;
     console.log("userId=>", user_id);
     console.log("Body=>", req.body);
     const mainImageUrl = imageFiles[0].filename;
     console.log("imageUrl===>", imageFiles);
     let result;
-    const createCar = `INSERT INTO tblcar(year,make,color,model,details,imageUrl,user_id) VALUES(?,?,?,?,?,?,?)`;
+    const createCar = `INSERT INTO tblcar(year,make,color,model,details,imageUrl,user_id,vin,mileage) VALUES(?,?,?,?,?,?,?,?,?)`;
     [result] = await pool.query(createCar, [
       year,
       make,
@@ -98,7 +166,8 @@ const createCarController = async (req, res) => {
       details,
       mainImageUrl,
       userId,
-      soldStatus,
+      vin,
+      mileage,
     ]);
     const car_id = result.insertId;
     const insertImages = `INSERT INTO tblimages(car_id,imageUrl) VALUES(?,?)`;
@@ -113,6 +182,66 @@ const createCarController = async (req, res) => {
       return res.status(500).json({ status: 500, message: "Operation Failed" });
     }
 
+    return res
+      .status(200)
+      .json({ status: 200, message: "data created successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ status: 500, message: `${error.message}` });
+  }
+
+  /*
+
+    // const { year, make, color, model, details } = req.body;
+    // const imageUrl = req.file.filename;
+    // console.log("ImageUrl=>", imageUrl);
+    // console.log("Body=>", req.body);
+    // let result;
+    // const createCar = `INSERT INTO tblcar(year,make,color,model,details) VALUES(?,?,?,?,?)`;
+    // [result] = await pool.query(createCar, [year, make, color, model, details]);
+    // console.log("Result=>", result);
+    // if (!result) {
+    //   return res.status(500).json({ status: 500, message: "Operation Failed" });
+    // }
+
+    // return res
+    //   .status(200)
+    //   .json({ status: 200, message: "data created successfully" });
+
+    */
+};
+
+const createCarControllerWithoutImages = async (req, res) => {
+  try {
+    console.log(req.body);
+    const {
+      year,
+      make,
+      color,
+      model,
+      details,
+      imageUrl,
+      user_id,
+      vin,
+      mileage,
+    } = req.body;
+
+    const userId = parseInt(user_id);
+    const createCar = `INSERT INTO tblcar(year,make,color,model,details,user_id,vin,mileage) VALUES(?,?,?,?,?,?,?,?);`;
+    [result] = await pool.query(createCar, [
+      year,
+      make,
+      color,
+      model,
+      details,
+      userId,
+      vin,
+      mileage,
+    ]);
+    console.log("Result=>", result);
+    if (!result) {
+      return res.status(500).json({ status: 500, message: "Operation Failed" });
+    }
     return res
       .status(200)
       .json({ status: 200, message: "data created successfully" });
@@ -184,13 +313,28 @@ const updateUserAuctioneerCarsList = async (req, res) => {
     const updateStatus = "UPDATE tblcar SET status=? WHERE car_id=?";
     const adminListQuery = `INSERT INTO tbladmincars (admin_id, car_id,status) VALUES (?, ?,?)`;
 
-    car_ids.map(async (item) => {
+    // await Promise.all(
+    //   car_ids.map((item) => {
+    //     [result] = pool.query(adminListQuery, [admin_id, item, status]);
+    //     [result] = pool.query(updateStatus, [status, item]);
+    //     if (result.length <= 0) {
+    //       return res.status(404).json({ status: 404, message: "Not Found" });
+    //     }
+    //   }
+    //   )
+    // );
+
+    const promises = car_ids.map(async (item) => {
       [result] = await pool.query(adminListQuery, [admin_id, item, status]);
-      [result] = await pool.query(updateStatus, [status, item]);
+
       if (result.length <= 0) {
         return res.status(404).json({ status: 404, message: "Not Found" });
       }
+
+      await pool.query(updateStatus, [status, item]);
     });
+
+    await Promise.all(promises);
 
     return res.json({ status: 200, data: result });
   } catch (error) {
@@ -207,4 +351,33 @@ module.exports = {
   getCarDetailsByCarId,
   updateUserAuctioneerCarsList,
   getUserCarsDataWithStatus,
+  createCarControllerWithoutImages,
 };
+
+// const promises = car_ids.map(async (item) => {
+//   try {
+//     const [result] = await pool.query(adminListQuery, [admin_id, item, status]);
+
+//     if (result.length <= 0) {
+//       return res.status(404).json({ status: 404, message: "Not Found" });
+//     }
+
+//     await pool.query(updateStatus, [status, item]);
+//   } catch (error) {
+//     // Handle any errors that occur during the database queries or other operations.
+//     console.error(error);
+//     return res
+//       .status(500)
+//       .json({ status: 500, message: "Internal Server Error" });
+//   }
+// });
+
+// try {
+//   await Promise.all(promises);
+// } catch (error) {
+//   // Handle any errors that occur during the Promise.all operation.
+//   console.error(error);
+//   return res
+//     .status(500)
+//     .json({ status: 500, message: "Internal Server Error" });
+// }
